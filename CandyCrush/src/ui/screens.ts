@@ -2,6 +2,7 @@ import type { SaveData, UserSettings } from '../game/save'
 import { AVATAR_COLORS, AVATARS } from '../game/save'
 import { LEVEL_COUNT, levelDef } from '../game/levels'
 import { BOOSTERS } from '../game/rewards'
+import { STAR_COINS, FIRST_CLEAR_BONUS } from '../game/rewards'
 import { ACHIEVEMENTS } from '../game/achievements'
 import { drawCandy } from './renderer'
 import { audio } from '../audio'
@@ -87,6 +88,7 @@ export class UI {
       case 'achievements': this.achievements(); break
       case 'shop': this.shop(); break
       case 'settings': this.settings(); break
+      case 'help': this.help(); break
     }
   }
 
@@ -96,7 +98,7 @@ export class UI {
       <div class="screen home">
         <div class="banner">
           <canvas id="homeCandy"></canvas>
-          <div class="logo"><span class="c1">C</span>andy <span class="c2">Cr</span>ush</div>
+          <div class="logo"><span class="c1">Swipe</span> candy <span class="c2">X</span></div>
           <div class="tagline">¡Dulces, puntuación y diversión!</div>
         </div>
         <div class="card player-card">
@@ -113,6 +115,7 @@ export class UI {
           <button class="btn sub" data-nav="achievements">🏆 Logros</button>
           <button class="btn sub" data-nav="shop">🛒 Tienda</button>
           <button class="btn sub" data-nav="settings">⚙️ Ajustes</button>
+          <button class="btn sub" data-nav="help">❓ Ayuda</button>
         </div>
       </div>
     `, (r) => {
@@ -317,6 +320,7 @@ export class UI {
       <div class="screen game">
         <div class="topbar">
           <button class="icon-btn" id="pauseBtn">⏸</button>
+          <button class="icon-btn" id="helpBtn">❓</button>
           <div class="title lv-title">Nivel ${level}</div>
           <div class="chip" id="movesChip">⚡ ${d.moves}</div>
         </div>
@@ -333,6 +337,7 @@ export class UI {
       </div>
     `, (r) => {
       r.querySelector('#pauseBtn')!.addEventListener('click', () => this.pauseMenu())
+      r.querySelector('#helpBtn')!.addEventListener('click', () => this.help())
     })
     return this.root.querySelector<HTMLCanvasElement>('#board')!
   }
@@ -419,6 +424,55 @@ export class UI {
           this.hooks.onGameNav((el as HTMLElement).dataset.action! as 'resume' | 'restart' | 'menu')
         })
       })
+    })
+  }
+
+  help() {
+    this.modal(`
+      <div class="help-modal">
+        <h2>❓ ¿Cómo se juega?</h2>
+        <div class="help-sec">
+          <h3>🎯 Objetivo</h3>
+          <p>Cada nivel pide alcanzar una pun­tuación antes de que se acaben los movimientos. Ganas al llegar a ella y consigues más estrellas cuanto más sumes: ⭐ superado · ⭐⭐ 1,5× el objetivo · ⭐⭐⭐ 2,25×.</p>
+        </div>
+        <div class="help-sec">
+          <h3>🍬 Mecánica</h3>
+          <p>Desliza un dulce hacia un vecino para intercambiarlo. Junta <b>3 o más</b> del mismo color, en fila o columna, para eliminarlos y sumar puntos. Al caer nuevos dulces pueden encadenarse más combinaciones (cascadas).</p>
+          <ul>
+            <li><b>4 en línea</b> → crea un dulce <b>rayado</b> que explota su fila o columna al usarlo.</li>
+            <li><b>5 en línea</b> → crea una <b>bomba de color</b>.</li>
+          </ul>
+        </div>
+        <div class="help-sec">
+          <h3>💣 Especiales</h3>
+          <ul>
+            <li>Bomba de color + un dulce → elimina <b>todos</b> los dulces de ese color.</li>
+            <li>Bomba + bomba → limpia el tablero entero.</li>
+            <li>Dos rayados/wraps juntos → explosiones en cruz y por zonas.</li>
+          </ul>
+        </div>
+        <div class="help-sec">
+          <h3>🔨 Potenciadores</h3>
+          <ul>
+            <li><b>Martillo</b> (${BOOSTERS[0].cost} ${COIN_SVG}): actívalo y <b>toca un dulce</b> para destruirlo.</li>
+            <li><b>+3 movimientos</b> (${BOOSTERS[1].cost} ${COIN_SVG}): se aplica al instante.</li>
+            <li><b>Barajar</b> (${BOOSTERS[2].cost} ${COIN_SVG}): reordena todo el tablero.</li>
+          </ul>
+        </div>
+        <div class="help-sec">
+          <h3>${COIN_SVG} Monedas y recompensas</h3>
+          <p>Ganas monedas al superar niveles (⭐ = ${STAR_COINS[0]}, ⭐⭐ = ${STAR_COINS[1]}, ⭐⭐⭐ = ${STAR_COINS[2]} + ${FIRST_CLEAR_BONUS} la primera vez). Gástalas en la 🛒 Tienda y desbloquea 🏆 logros.</p>
+        </div>
+        <div class="help-sec">
+          <h3>⚙️ Ajustes y pausa</h3>
+          <p>En ⚙️ Ajustes cambias sonido, música, animaciones y vibración. Durante la partida, ⏸ te permite continuar, reiniciar o volver al menú.</p>
+        </div>
+        <div class="modal-btns">
+          <button class="btn primary" data-close>✖ Entendido</button>
+        </div>
+      </div>
+    `, (r) => {
+      r.querySelector('[data-close]')!.addEventListener('click', () => r.remove())
     })
   }
 

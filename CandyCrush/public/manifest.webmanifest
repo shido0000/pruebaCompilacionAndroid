@@ -1,6 +1,6 @@
 {
-  "name": "Candy Crush",
-  "short_name": "Candy Crush",
+  "name": "Swipe candy X",
+  "short_name": "Swipe candy X",
   "description": "Juego de candies: niveles, logros, puntuación y recompensas",
   "start_url": "/",
   "display": "standalone",

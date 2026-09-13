@@ -40,6 +40,7 @@ const { chromium } = require('playwright-core');
   await page.waitForTimeout(1200);
   const offlineTitle = await page.title().catch(() => 'ERR');
   console.log('offline reload title:', offlineTitle);
+  if (offlineTitle !== 'Swipe candy X') throw new Error('offline title mismatch');
   await page.context().setOffline(false);
 
   console.log('CONSOLE ERRORS:', errors.length ? errors.join(' ||| ') : 'none');

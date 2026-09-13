@@ -1,4 +1,4 @@
-const CACHE = 'candycrush-v1'
+const CACHE = 'swipecandyx-v1'
 const BASE = self.location.origin + '/'
 
 self.addEventListener('install', (e) => {

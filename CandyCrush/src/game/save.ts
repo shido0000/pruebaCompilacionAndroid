@@ -92,7 +92,13 @@ export function loadSave(): SaveData {
     data.stats = { ...d.stats, ...data.stats }
     data.boosters = { ...d.boosters, ...data.boosters }
     data.user = { ...d.user, ...data.user }
+    data.stars = { ...d.stars, ...data.stars }
+    data.bestScore = { ...d.bestScore, ...data.bestScore }
+    data.achievements = { ...d.achievements, ...data.achievements }
     data.unlocked = Math.max(1, data.unlocked | 0)
+    data.coins = data.coins | 0
+    data.seenTutorial = !!data.seenTutorial
+    data.lastPlayed = data.lastPlayed | 0
     return data
   } catch {
     return defaultSave()

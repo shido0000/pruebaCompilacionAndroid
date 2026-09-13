@@ -82,11 +82,15 @@ const ui = new UI(root, save, {
 ui.render()
 
 function teardownGame() {
+  if (session) {
+    session.dispose()
+    session = null
+  }
+  ;(window as unknown as { __session?: unknown }).__session = undefined
   if (inputDispose) {
     inputDispose.dispose()
     inputDispose = null
   }
-  session = null
 }
 
 function startGame(level: number) {
@@ -105,6 +109,7 @@ function startGame(level: number) {
       if (!save.user.music) return
       audio.startMusic()
     },
+    (p: Pos) => session!.onTap(p),
   )
 }
 

@@ -279,6 +279,7 @@ export class Renderer {
   anim = true
   private last = 0
   private running = false
+  private raf = 0
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas
@@ -290,13 +291,28 @@ export class Renderer {
     this.running = true
     this.last = performance.now()
     const loop = (now: number) => {
+      if (!this.canvas.isConnected) {
+        this.running = false
+        return
+      }
       const dt = Math.min(0.05, (now - this.last) / 1000)
       this.last = now
       this.update(dt)
       this.draw()
-      requestAnimationFrame(loop)
+      this.raf = requestAnimationFrame(loop)
     }
-    requestAnimationFrame(loop)
+    this.raf = requestAnimationFrame(loop)
+  }
+
+  dispose() {
+    this.running = false
+    if (this.raf) cancelAnimationFrame(this.raf)
+    this.raf = 0
+    this.sprites.clear()
+    this.dying = []
+    this.texts = []
+    this.overlays = []
+    this.particles.list = []
   }
 
   resize(width: number, height: number) {

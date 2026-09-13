@@ -694,6 +694,41 @@ a,
   margin-bottom: 12px;
 }
 
+.help-modal {
+  text-align: left;
+}
+
+.help-modal h2 {
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.help-sec {
+  margin-bottom: 14px;
+}
+
+.help-sec h3 {
+  font-size: 15px;
+  margin-bottom: 5px;
+  color: #ffd23f;
+}
+
+.help-sec p,
+.help-sec ul {
+  font-size: 13.5px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.help-sec ul {
+  padding-left: 18px;
+  margin-top: 4px;
+}
+
+.help-sec li {
+  margin-bottom: 4px;
+}
+
 .result .res-title {
   font-size: 22px;
   font-weight: 900;

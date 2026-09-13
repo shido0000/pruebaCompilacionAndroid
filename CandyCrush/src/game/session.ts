@@ -29,7 +29,7 @@ export class Session {
   private save: SaveData
   private activeBooster: BoosterId | null = null
   private canvas: HTMLCanvasElement
-  readonly debug = { swaps: 0, validSwaps: 0, onBoardTapCalls: 0 }
+  readonly debug = { swaps: 0, validSwaps: 0, onBoardTapCalls: 0, onTapCalls: 0 }
 
   private get anim() {
     return this.ui.save.user.anim
@@ -55,6 +55,10 @@ export class Session {
     const width = Math.max(120, wrap.clientWidth)
     this.renderer.resize(width, width)
     this.renderer.sync(this.grid)
+  }
+
+  dispose() {
+    this.renderer.dispose()
   }
 
   start(level: number) {
@@ -97,6 +101,19 @@ export class Session {
       boosters: { ...this.boosters() },
       coins: this.save.coins,
     })
+  }
+
+  onTap(p: Pos) {
+    this.debug.onTapCalls++
+    if (this.busy || this.over) return
+    if (this.activeBooster === 'hammer') {
+      void this.useHammer(p)
+      return
+    }
+    if (this.activeBooster === 'shuffle') {
+      this.ui.toast('El barajado se aplica desde el botón 🔀', 'warn')
+      return
+    }
   }
 
   onBoardTap(a: Pos, b: Pos) {
@@ -150,6 +167,7 @@ export class Session {
         return
       }
       this.activeBooster = this.activeBooster === 'hammer' ? null : 'hammer'
+      this.canvas.style.cursor = this.activeBooster === 'hammer' ? 'crosshair' : ''
       this.ui.setBoosterActive(this.activeBooster)
       if (this.activeBooster) this.ui.toast('🔨 Toca un dulce para destruirlo', 'info')
       return
@@ -170,8 +188,12 @@ export class Session {
     this.renderer.fxPop(mid.x, mid.y, [CANDY_COLORS[cell.id].base])
     this.renderer.popCells(this.grid, [pos])
     this.grid[pos.r][pos.c] = null
+    persistSave(this.save)
+    applyGravity(this.grid, this.colors)
+    this.renderer.sync(this.grid)
     await this.wait(240)
     await this.resolveCascades()
+    this.busy = false
     this.checkEnd()
   }
 

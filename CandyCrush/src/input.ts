@@ -9,6 +9,7 @@ export function hookBoardInput(
   canvas: HTMLCanvasElement,
   onSwap: (a: Pos, b: Pos) => void,
   onFirstTouch: () => void,
+  onTap?: (p: Pos) => void,
 ): BoardInput {
   let down = false
   let sx = 0
@@ -50,6 +51,7 @@ export function hookBoardInput(
   }
 
   const upHandler = () => {
+    if (down && onTap) onTap({ r: startRow, c: startColumn })
     down = false
   }
 
