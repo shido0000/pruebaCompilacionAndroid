@@ -26,7 +26,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Usa la versión de Node que requiera tu proyecto
+          node-version: '22' # Usa la versión de Node que requiera tu proyecto
           cache: 'npm'
           cache-dependency-path: ./CandyCrush/package-lock.json
 
