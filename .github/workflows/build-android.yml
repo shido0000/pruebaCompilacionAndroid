@@ -1,0 +1,44 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ "main", "master" ] # Se ejecuta al hacer push a la rama principal
+  pull_request:
+    branches: [ "main", "master" ] # También al abrir un Pull Request
+  workflow_dispatch: # Permite ejecutarlo manualmente desde la pestaña Actions
+
+jobs:
+  build:
+    name: Compilar APK
+    runs-on: ubuntu-latest # Usa la última versión de Ubuntu
+
+    steps:
+      # 1. Descarga el código de tu repositorio
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Configura Java 17 (necesario para compilar)
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin' # Puedes usar 'zulu' u otra distribución
+
+      # 3. Configura Gradle y activa el caché para builds más rápidos
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      # 4. Otorga permisos de ejecución al script gradlew
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      # 5. Compila el APK de depuración
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug --stacktrace
+
+      # 6. Sube el APK como un "artefacto" para que puedas descargarlo
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug # Nombre del artefacto que verás en GitHub
+          path: app/build/outputs/apk/debug/app-debug.apk # Ruta del APK generado

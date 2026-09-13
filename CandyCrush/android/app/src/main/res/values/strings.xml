@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Candy Crush</string>
+    <string name="title_activity_main">Candy Crush</string>
+    <string name="package_name">com.candycrush.game</string>
+    <string name="custom_url_scheme">com.candycrush.game</string>
+</resources>
